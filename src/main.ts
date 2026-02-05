@@ -277,4 +277,16 @@ function animate() {
   renderer.render(scene, camera)
 }
 
+// Controls card minimize/expand
+const controlsCard = document.getElementById('controls-card')
+const controlsCardToggle = document.getElementById('controls-card-toggle')
+if (controlsCard && controlsCardToggle) {
+  controlsCardToggle.addEventListener('click', () => {
+    const minimized = controlsCard.classList.toggle('controls-card--minimized')
+    controlsCardToggle.textContent = minimized ? '+' : '−'
+    controlsCardToggle.setAttribute('aria-label', minimized ? 'Expand' : 'Minimize')
+    controlsCardToggle.setAttribute('title', minimized ? 'Expand' : 'Minimize')
+  })
+}
+
 animate()
