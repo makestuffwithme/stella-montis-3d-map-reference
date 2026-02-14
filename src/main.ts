@@ -194,9 +194,6 @@ loader.load(
 
     console.log('Model loaded successfully, edge-line sets:', wireframeOverlayMeshes.length)
   },
-  (progress) => {
-    console.log(`Loading: ${(progress.loaded / progress.total * 100).toFixed(2)}%`)
-  },
   (error) => {
     console.error('Error loading model:', error)
   }
