@@ -15,25 +15,26 @@
 
     gtag('config', 'G-JENP9Y9BBJ');
   </script>
-  <body>
+  <body class="min-h-screen w-full font-sans antialiased">
     <div id="app"></div>
-    <div id="controls-card" class="controls-card">
-      <div class="controls-card-header">
-        <h3>Controls</h3>
-        <button type="button" class="controls-card-toggle" id="controls-card-toggle" title="Minimize" aria-label="Minimize">−</button>
+    <div id="controls-card" class="controls-card fixed top-3 left-1/2 z-10 -translate-x-1/2 rounded-lg border border-white/10 bg-[rgba(26,26,26,0.88)] px-3.5 py-2 text-xs leading-relaxed text-white/90 backdrop-blur-sm transition-[padding,min-width] duration-200">
+      <div class="controls-card-header flex items-center justify-between gap-4">
+        <h3 class="m-0 text-[11px] font-semibold uppercase tracking-widest text-white/60">Controls</h3>
+        <button type="button" class="controls-card-toggle inline-flex h-5 w-5 shrink-0 cursor-pointer items-center justify-center rounded border border-white/10 bg-white/10 text-lg font-light leading-none text-white/70 transition-colors duration-150 hover:bg-white/20 hover:text-white/95" id="controls-card-toggle" title="Minimize" aria-label="Minimize">−</button>
       </div>
-      <div class="controls-card-body">
-        <ul>
-          <li><kbd>w</kbd><kbd>a</kbd><kbd>s</kbd><kbd>d</kbd> move</li>
-          <li><kbd>space</kbd> up <kbd>c</kbd> down</li>
-          <li><kbd>shift</kbd> sprint</li>
-          <li><kbd>left click</kbd> toggle mouselook</li>
-          <li>
-            <label class="controls-option">
-              <input type="checkbox" id="invert-mouse" />
+      <div class="controls-card-body mt-2">
+        <ul class="m-0 list-none p-0">
+          <li class="mb-1 last:mb-0"><kbd class="mr-1 inline-block rounded border border-white/10 bg-white/10 px-1.5 py-0.5 font-sans text-[11px]">w</kbd><kbd class="mr-1 inline-block rounded border border-white/10 bg-white/10 px-1.5 py-0.5 font-sans text-[11px]">a</kbd><kbd class="mr-1 inline-block rounded border border-white/10 bg-white/10 px-1.5 py-0.5 font-sans text-[11px]">s</kbd><kbd class="mr-1 inline-block rounded border border-white/10 bg-white/10 px-1.5 py-0.5 font-sans text-[11px]">d</kbd> move</li>
+          <li class="mb-1 last:mb-0"><kbd class="mr-1 inline-block rounded border border-white/10 bg-white/10 px-1.5 py-0.5 font-sans text-[11px]">space</kbd> up <kbd class="mr-1 inline-block rounded border border-white/10 bg-white/10 px-1.5 py-0.5 font-sans text-[11px]">c</kbd> down</li>
+          <li class="mb-1 last:mb-0"><kbd class="mr-1 inline-block rounded border border-white/10 bg-white/10 px-1.5 py-0.5 font-sans text-[11px]">shift</kbd> sprint</li>
+          <li class="mb-1 last:mb-0"><kbd class="mr-1 inline-block rounded border border-white/10 bg-white/10 px-1.5 py-0.5 font-sans text-[11px]">left click</kbd> toggle mouselook</li>
+          <li class="mb-1 last:mb-0">
+            <label class="controls-option inline-flex cursor-pointer items-center gap-1.5">
+              <input type="checkbox" id="invert-mouse" class="cursor-pointer" />
               <span>invert mouselook</span>
             </label>
           </li>
+          <li class="mb-1 last:mb-0">by <a href="https://www.youtube.com/@make_stuff_with_me" target="_blank" class="text-white/90 underline hover:text-white">makestuffwithme</a></li>
         </ul>
       </div>
     </div>
