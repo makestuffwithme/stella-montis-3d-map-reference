@@ -103,6 +103,21 @@ const mouseLook = {
   lastY: 0,
 }
 
+const invertMouseCheckbox = document.getElementById('invert-mouse') as HTMLInputElement | null
+let invertMouse = false
+if (invertMouseCheckbox) {
+  const invertMouseKey = 'stella-montis-invert-mouse'
+  invertMouse = localStorage.getItem(invertMouseKey) === 'true'
+  invertMouseCheckbox.checked = invertMouse
+  invertMouseCheckbox.addEventListener('change', () => {
+    invertMouse = invertMouseCheckbox.checked
+    localStorage.setItem(invertMouseKey, String(invertMouse))
+  })
+}
+function getMouseLookSign(): number {
+  return invertMouse ? 1 : -1
+}
+
 document.addEventListener('contextmenu', (e) => {
   e.preventDefault()
 })
@@ -127,8 +142,9 @@ document.addEventListener('mousemove', (event) => {
   if (isPointerLocked) {
     // Use movementX/movementY (deltas) while pointer is locked - no drift, infinite rotation
     const sensitivity = 0.002
-    cameraRotation.yaw -= event.movementX * sensitivity
-    cameraRotation.pitch -= event.movementY * sensitivity
+    const sign = getMouseLookSign()
+    cameraRotation.yaw += event.movementX * sensitivity * sign
+    cameraRotation.pitch += event.movementY * sensitivity * sign
     cameraRotation.pitch = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, cameraRotation.pitch))
     const euler = new THREE.Euler(cameraRotation.pitch, cameraRotation.yaw, 0, 'YXZ')
     camera.quaternion.setFromEuler(euler)
@@ -140,8 +156,9 @@ document.addEventListener('mousemove', (event) => {
     if (event.buttons & 2) {
       const deltaX = event.clientX - mouseLook.lastX
       const deltaY = event.clientY - mouseLook.lastY
-      cameraRotation.yaw -= deltaX * 0.005
-      cameraRotation.pitch -= deltaY * 0.005
+      const sign = getMouseLookSign()
+      cameraRotation.yaw += deltaX * 0.005 * sign
+      cameraRotation.pitch += deltaY * 0.005 * sign
       cameraRotation.pitch = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, cameraRotation.pitch))
       const euler = new THREE.Euler(cameraRotation.pitch, cameraRotation.yaw, 0, 'YXZ')
       camera.quaternion.setFromEuler(euler)

@@ -123,3 +123,15 @@ canvas {
   border-radius: 4px;
   border: 1px solid rgba(255, 255, 255, 0.08);
 }
+
+.controls-option {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  font-size: inherit;
+}
+
+.controls-option input[type="checkbox"] {
+  cursor: pointer;
+}
