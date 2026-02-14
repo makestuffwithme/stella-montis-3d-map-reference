@@ -19,67 +19,30 @@ renderer.setSize(window.innerWidth, window.innerHeight)
 renderer.setPixelRatio(window.devicePixelRatio)
 document.getElementById('app')!.appendChild(renderer.domElement)
 
-// Audio radius visualizer setup
-const raycaster = new THREE.Raycaster()
 const mouse = new THREE.Vector2()
 
-// Lighting - optimized for interior scene differentiation
-const ambientLight = new THREE.AmbientLight(0xffffff, 0.5)
+// --- Lighting: rim (edges pop) only ---
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.25)
 scene.add(ambientLight)
 
-// Main light from top-right-front (bright, reveals floor vs walls)
-const directionalLight1 = new THREE.DirectionalLight(0xffffff, 1.2)
-directionalLight1.position.set(10, 15, 8)
-directionalLight1.castShadow = true
-scene.add(directionalLight1)
+const keyLight = new THREE.DirectionalLight(0xffffff, 0.5)
+keyLight.position.set(8, 10, 6)
+scene.add(keyLight)
 
-// Fill light from left side
-const directionalLight2 = new THREE.DirectionalLight(0x88ccff, 0.6)
-directionalLight2.position.set(-12, 5, 5)
-scene.add(directionalLight2)
+const fillLight = new THREE.DirectionalLight(0x88ccff, 0.2)
+fillLight.position.set(-12, 5, 5)
+scene.add(fillLight)
 
-// Back light for separation
-const directionalLight3 = new THREE.DirectionalLight(0xffaa88, 0.4)
-directionalLight3.position.set(0, 8, -12)
-scene.add(directionalLight3)
+const rimLight = new THREE.DirectionalLight(0xffffff, 1.4)
+rimLight.position.set(0, 8, 12)
+scene.add(rimLight)
 
-// First-person camera controls (Minecraft creative mode style)
 const keys: Record<string, boolean> = {}
-const moveSpeed = 0.1
-const sprintMultiplier = 2.0 // Speed multiplier when sprinting
-
-// Debug mode toggle
-const debugMode = {
-  wireframe: false,
-  doubleShade: false,
-}
+const moveSpeed = 0.04
+const sprintMultiplier = 1.8
 
 // Initialize camera position
 camera.position.set(-1.23, 23.44, 50.22)
-
-// Debug key bindings
-window.addEventListener('keydown', (e) => {
-  if (e.key === '1') {
-    e.preventDefault()
-    debugMode.wireframe = !debugMode.wireframe
-    console.log('Wireframe toggled:', debugMode.wireframe)
-    scene.traverse((child) => {
-      if (child instanceof THREE.Mesh) {
-        child.material.wireframe = debugMode.wireframe
-      }
-    })
-  }
-  if (e.key === '2') {
-    e.preventDefault()
-    debugMode.doubleShade = !debugMode.doubleShade
-    console.log('Double-sided shading toggled:', debugMode.doubleShade)
-    scene.traverse((child) => {
-      if (child instanceof THREE.Mesh) {
-        child.material.side = debugMode.doubleShade ? THREE.DoubleSide : THREE.FrontSide
-      }
-    })
-  }
-})
 
 const cameraRotation = {
   yaw: Math.atan2(0, 1),
@@ -149,6 +112,52 @@ document.addEventListener('mousemove', (event) => {
   }
 })
 
+// Edge lines: always on, only crease edges (wall/ceiling, etc.)
+const edgeLineParams = {
+  angleDeg: 1,
+  color: 0x1c1c1c,
+  opacity: 0.9,
+}
+const edgeLineMaterial = new THREE.LineBasicMaterial({
+  color: edgeLineParams.color,
+  opacity: edgeLineParams.opacity,
+  transparent: true,
+  depthTest: true,
+  depthWrite: false,
+})
+const wireframeOverlayGroup = new THREE.Group()
+scene.add(wireframeOverlayGroup)
+const wireframeOverlayMeshes: THREE.LineSegments[] = []
+let loadedModel: THREE.Group | null = null
+
+function rebuildEdgeLines() {
+  if (!loadedModel) return
+  wireframeOverlayMeshes.length = 0
+  while (wireframeOverlayGroup.children.length) {
+    const c = wireframeOverlayGroup.children[0]
+    wireframeOverlayGroup.remove(c)
+    if (c instanceof THREE.LineSegments && c.geometry) c.geometry.dispose()
+  }
+  const _wPos = new THREE.Vector3()
+  const _wQuat = new THREE.Quaternion()
+  const _wScale = new THREE.Vector3()
+  loadedModel.traverse((child) => {
+    if (child instanceof THREE.Mesh && child.geometry) {
+      child.getWorldPosition(_wPos)
+      child.getWorldQuaternion(_wQuat)
+      child.getWorldScale(_wScale)
+      const edgesGeom = new THREE.EdgesGeometry(child.geometry, edgeLineParams.angleDeg)
+      const lineSegments = new THREE.LineSegments(edgesGeom, edgeLineMaterial)
+      lineSegments.position.copy(_wPos)
+      lineSegments.quaternion.copy(_wQuat)
+      lineSegments.scale.copy(_wScale)
+      lineSegments.renderOrder = 1
+      wireframeOverlayGroup.add(lineSegments)
+      wireframeOverlayMeshes.push(lineSegments)
+    }
+  })
+}
+
 // Load model
 const loader = new GLTFLoader()
 const modelPath = import.meta.env.BASE_URL + 'assets/stella-3d-reference.glb'
@@ -172,14 +181,18 @@ loader.load(
     const box = new THREE.Box3().setFromObject(model)
     const center = box.getCenter(new THREE.Vector3())
     const size = box.getSize(new THREE.Vector3())
-    
+
     model.position.sub(center)
-    
+    model.updateMatrixWorld(true)
+    loadedModel = model
+
+    rebuildEdgeLines()
+
     // Apply the camera rotation based on the direction we want
     const euler = new THREE.Euler(cameraRotation.pitch, cameraRotation.yaw, 0, 'YXZ')
     camera.quaternion.setFromEuler(euler)
-  
-    console.log('Model loaded successfully')
+
+    console.log('Model loaded successfully, edge-line sets:', wireframeOverlayMeshes.length)
   },
   (progress) => {
     console.log(`Loading: ${(progress.loaded / progress.total * 100).toFixed(2)}%`)
@@ -199,15 +212,15 @@ window.addEventListener('resize', () => {
 // Animation loop
 function animate() {
   requestAnimationFrame(animate)
-  
+
   // Get camera direction vectors
   const forward = new THREE.Vector3(0, 0, -1).applyQuaternion(camera.quaternion)
   const right = new THREE.Vector3(1, 0, 0).applyQuaternion(camera.quaternion)
   const up = new THREE.Vector3(0, 1, 0)
-  
+
   // Calculate current movement speed (apply sprint multiplier if shift is held)
   const currentSpeed = keys['shift'] ? moveSpeed * sprintMultiplier : moveSpeed
-  
+
   // WASD movement
   if (keys['w']) camera.position.addScaledVector(forward, currentSpeed)
   if (keys['s']) camera.position.addScaledVector(forward, -currentSpeed)
@@ -215,7 +228,7 @@ function animate() {
   if (keys['d']) camera.position.addScaledVector(right, currentSpeed)
   if (keys[' ']) camera.position.addScaledVector(up, currentSpeed)
   if (keys['c']) camera.position.addScaledVector(up, -currentSpeed)
-  
+
   renderer.render(scene, camera)
 }
 
