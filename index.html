@@ -24,19 +24,30 @@
       </div>
       <div class="controls-card-body mt-2">
         <ul class="m-0 list-none p-0">
-          <li class="mb-1 last:mb-0"><kbd class="mr-1 inline-block rounded border border-white/10 bg-white/10 px-1.5 py-0.5 font-sans text-[11px]">w</kbd><kbd class="mr-1 inline-block rounded border border-white/10 bg-white/10 px-1.5 py-0.5 font-sans text-[11px]">a</kbd><kbd class="mr-1 inline-block rounded border border-white/10 bg-white/10 px-1.5 py-0.5 font-sans text-[11px]">s</kbd><kbd class="mr-1 inline-block rounded border border-white/10 bg-white/10 px-1.5 py-0.5 font-sans text-[11px]">d</kbd> move</li>
-          <li class="mb-1 last:mb-0"><kbd class="mr-1 inline-block rounded border border-white/10 bg-white/10 px-1.5 py-0.5 font-sans text-[11px]">space</kbd> up <kbd class="mr-1 inline-block rounded border border-white/10 bg-white/10 px-1.5 py-0.5 font-sans text-[11px]">c</kbd> down</li>
-          <li class="mb-1 last:mb-0"><kbd class="mr-1 inline-block rounded border border-white/10 bg-white/10 px-1.5 py-0.5 font-sans text-[11px]">shift</kbd> sprint</li>
-          <li class="mb-1 last:mb-0"><kbd class="mr-1 inline-block rounded border border-white/10 bg-white/10 px-1.5 py-0.5 font-sans text-[11px]">left click</kbd> toggle mouselook</li>
+          <li class="mb-1 last:mb-0"><kbd class="mr-1 inline-block rounded border border-white/10 bg-white/10 px-1 py-0 font-sans text-[11px]">w</kbd><kbd class="mr-1 inline-block rounded border border-white/10 bg-white/10 px-1 py-0 font-sans text-[11px]">a</kbd><kbd class="mr-1 inline-block rounded border border-white/10 bg-white/10 px-1 py-0 font-sans text-[11px]">s</kbd><kbd class="mr-1 inline-block rounded border border-white/10 bg-white/10 px-1 py-0 font-sans text-[11px]">d</kbd> move</li>
+          <li class="mb-1 last:mb-0"><kbd class="mr-1 inline-block rounded border border-white/10 bg-white/10 px-1 py-0 font-sans text-[11px]">space</kbd> up <kbd class="mr-1 inline-block rounded border border-white/10 bg-white/10 px-1 py-0 font-sans text-[11px]">c</kbd> down</li>
+          <li class="mb-1 last:mb-0"><kbd class="mr-1 inline-block rounded border border-white/10 bg-white/10 px-1 py-0 font-sans text-[11px]">shift</kbd> sprint</li>
+          <li class="mb-1 last:mb-0"><kbd class="mr-1 inline-block rounded border border-white/10 bg-white/10 px-1 py-0 font-sans text-[11px]">left click</kbd> toggle mouselook</li>
           <li class="mb-1 last:mb-0">
             <label class="controls-option inline-flex cursor-pointer items-center gap-1.5">
               <input type="checkbox" id="invert-mouse" class="cursor-pointer" />
               <span>invert mouselook</span>
             </label>
           </li>
-          <li class="mb-1 last:mb-0">by <a href="https://www.youtube.com/@make_stuff_with_me" target="_blank" class="text-white/90 underline hover:text-white">makestuffwithme</a></li>
+          <li class="mb-0 mt-2 flex justify-center">
+            <a href="https://www.youtube.com/@make_stuff_with_me?sub_confirmation=1" target="_blank" rel="noopener noreferrer" class="credit-cta inline-flex items-center gap-1.5 rounded-md border border-[#ff0000]/40 bg-[#ff0000]/15 px-2 py-1 text-[11px] font-medium text-white/95 no-underline transition-all duration-200 hover:border-[#ff0000]/70 hover:bg-[#ff0000]/25 hover:scale-[1.02] hover:shadow-[0_0_12px_rgba(255,0,0,0.25)]" title="subscribe on youtube">
+              <span class="credit-cta-icon" aria-hidden="true">
+                <svg width="14" height="10" viewBox="0 0 24 17" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M23.498 2.69a2.99 2.99 0 0 0-2.122-2.12C19.505 0 12 0 12 0S4.495 0 2.622.57a2.99 2.99 0 0 0-2.122 2.12A31.3 31.3 0 0 0 0 8.5a31.3 31.3 0 0 0 .5 5.81 2.99 2.99 0 0 0 2.122 2.12C4.495 17 12 17 12 17s7.505 0 9.378-.57a2.99 2.99 0 0 0 2.122-2.12 31.3 31.3 0 0 0 .5-5.81 31.3 31.3 0 0 0-.5-5.81Z"/><path fill="#0d0d0d" d="M9.545 12.427V4.573L15.818 8.5 9.545 12.427Z"/></svg>
+              </span>
+              <span>subscribe on youtube</span>
+            </a>
+          </li>
         </ul>
       </div>
+    </div>
+    <div id="disclaimer-card" class="disclaimer-card fixed bottom-3 left-1/2 z-10 -translate-x-1/2 flex items-center gap-2 rounded-lg border border-white/10 bg-[rgba(26,26,26,0.88)] px-2 py-1 text-[10px] leading-relaxed text-white/70 backdrop-blur-sm">
+      <span class="whitespace-nowrap">This is an unofficial fan-made project for educational purposes only. Arc Raiders and Stella Montis are the property of Embark Studios.</span>
+      <button type="button" id="disclaimer-hide" class="shrink-0 cursor-pointer rounded border border-white/10 bg-white/10 px-1 py-0 text-[10px] text-white/70 transition-colors hover:bg-white/20 hover:text-white/90" title="Hide disclaimer">hide</button>
     </div>
     <script type="module" src="./src/main.ts"></script>
   </body>

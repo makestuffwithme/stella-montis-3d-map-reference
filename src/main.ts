@@ -244,4 +244,18 @@ if (controlsCard && controlsCardToggle) {
   })
 }
 
+// Disclaimer card hide (persisted)
+const disclaimerCard = document.getElementById('disclaimer-card')
+const disclaimerHide = document.getElementById('disclaimer-hide')
+const disclaimerKey = 'stella-montis-disclaimer-hidden'
+if (disclaimerCard && disclaimerHide) {
+  if (localStorage.getItem(disclaimerKey) === 'true') {
+    disclaimerCard.classList.add('hidden')
+  }
+  disclaimerHide.addEventListener('click', () => {
+    disclaimerCard.classList.add('hidden')
+    localStorage.setItem(disclaimerKey, 'true')
+  })
+}
+
 animate()
