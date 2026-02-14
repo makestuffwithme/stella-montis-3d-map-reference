@@ -2,8 +2,6 @@
 import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import './style.css'
-import { AudioRadiusVisualizer } from './audioRadiusVisualizer'
-import { createBeepingCamera } from './beepingCamera'
 
 // Scene setup
 const scene = new THREE.Scene()
@@ -22,7 +20,6 @@ renderer.setPixelRatio(window.devicePixelRatio)
 document.getElementById('app')!.appendChild(renderer.domElement)
 
 // Audio radius visualizer setup
-const audioVisualizer = new AudioRadiusVisualizer(scene)
 const raycaster = new THREE.Raycaster()
 const mouse = new THREE.Vector2()
 
@@ -97,7 +94,7 @@ window.addEventListener('keyup', (e) => {
   keys[e.key.toLowerCase()] = false
 })
 
-// Mouse look - right click with pointer lock (captures mouse so it doesn't leave the window)
+// Mouse look - left click to capture (pointer lock), left click again to release
 const mouseLook = {
   lastX: 0,
   lastY: 0,
@@ -122,17 +119,12 @@ document.addEventListener('contextmenu', (e) => {
   e.preventDefault()
 })
 
-// Request pointer lock on right mousedown so the mouse stays captured while looking
-renderer.domElement.addEventListener('mousedown', (event) => {
-  if (event.button === 2) {
-    renderer.domElement.requestPointerLock()
-  }
-})
-
-// Release pointer lock when right mouse button is released
-document.addEventListener('mouseup', (event) => {
-  if (event.button === 2) {
+// Left click on canvas: request pointer lock to enable mouselook; click again to release
+renderer.domElement.addEventListener('click', () => {
+  if (document.pointerLockElement === renderer.domElement) {
     document.exitPointerLock()
+  } else {
+    renderer.domElement.requestPointerLock()
   }
 })
 
@@ -152,61 +144,8 @@ document.addEventListener('mousemove', (event) => {
     // Update mouse position for raycasting only when not locked
     mouse.x = (event.clientX / window.innerWidth) * 2 - 1
     mouse.y = -(event.clientY / window.innerHeight) * 2 + 1
-    // Fallback: right-drag without lock (e.g. if lock was denied)
-    if (event.buttons & 2) {
-      const deltaX = event.clientX - mouseLook.lastX
-      const deltaY = event.clientY - mouseLook.lastY
-      const pitchSign = getMouseLookSign()
-      cameraRotation.yaw += deltaX * 0.005 * -1
-      cameraRotation.pitch += deltaY * 0.005 * pitchSign
-      cameraRotation.pitch = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, cameraRotation.pitch))
-      const euler = new THREE.Euler(cameraRotation.pitch, cameraRotation.yaw, 0, 'YXZ')
-      camera.quaternion.setFromEuler(euler)
-    }
     mouseLook.lastX = event.clientX
     mouseLook.lastY = event.clientY
-  }
-})
-
-// Handle left clicks on camera objects and other objects
-document.addEventListener('click', (event) => {
-  // Only process left clicks (button === 0)
-  if (event.button !== 0) return
-
-  raycaster.setFromCamera(mouse, camera)
-  
-  // Check for intersections with camera objects
-  const intersects = raycaster.intersectObjects(scene.children, true)
-  
-  let clickedCamera = false
-  
-  for (const intersection of intersects) {
-    const obj = intersection.object
-    // Check if this object is a beeping camera (has userData.isBeepingCamera)
-    if (obj.userData?.isBeepingCamera) {
-      console.log('Clicked on beeping camera, showing audio radius')
-      audioVisualizer.showStaticAudioRadius(obj.getWorldPosition(new THREE.Vector3()), 10)
-      clickedCamera = true
-      break
-    }
-    // Also check parent objects in case we clicked on a child mesh
-    let parent = obj.parent
-    while (parent) {
-      if (parent.userData?.isBeepingCamera) {
-        console.log('Clicked on beeping camera (via parent), showing audio radius')
-        audioVisualizer.showStaticAudioRadius(parent.getWorldPosition(new THREE.Vector3()), 10)
-        clickedCamera = true
-        break
-      }
-      parent = parent.parent
-    }
-    
-    if (clickedCamera) break
-  }
-  
-  // If we didn't click on a camera, hide the audio radius sphere
-  if (!clickedCamera) {
-    audioVisualizer.hideAudioRadius()
   }
 })
 
@@ -239,22 +178,8 @@ loader.load(
     // Apply the camera rotation based on the direction we want
     const euler = new THREE.Euler(cameraRotation.pitch, cameraRotation.yaw, 0, 'YXZ')
     camera.quaternion.setFromEuler(euler)
-    
-    // Create test beeping cameras in the scene
-    // You can modify these positions or add/remove cameras as needed
-    const cameraPositions = [
-      new THREE.Vector3(-3, 2, 1),
-      new THREE.Vector3(3, 1.5, 2),
-      new THREE.Vector3(0, 3, -2),
-    ]
-
-    cameraPositions.forEach((pos) => {
-      const camera = createBeepingCamera(pos)
-      scene.add(camera)
-    })
-
+  
     console.log('Model loaded successfully')
-    console.log('Test cameras created. Click on them to see audio radius visualization!')
   },
   (progress) => {
     console.log(`Loading: ${(progress.loaded / progress.total * 100).toFixed(2)}%`)
