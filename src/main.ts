@@ -142,9 +142,9 @@ document.addEventListener('mousemove', (event) => {
   if (isPointerLocked) {
     // Use movementX/movementY (deltas) while pointer is locked - no drift, infinite rotation
     const sensitivity = 0.002
-    const sign = getMouseLookSign()
-    cameraRotation.yaw += event.movementX * sensitivity * sign
-    cameraRotation.pitch += event.movementY * sensitivity * sign
+    const pitchSign = getMouseLookSign() // invert applies only to up/down
+    cameraRotation.yaw += event.movementX * sensitivity * -1
+    cameraRotation.pitch += event.movementY * sensitivity * pitchSign
     cameraRotation.pitch = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, cameraRotation.pitch))
     const euler = new THREE.Euler(cameraRotation.pitch, cameraRotation.yaw, 0, 'YXZ')
     camera.quaternion.setFromEuler(euler)
@@ -156,9 +156,9 @@ document.addEventListener('mousemove', (event) => {
     if (event.buttons & 2) {
       const deltaX = event.clientX - mouseLook.lastX
       const deltaY = event.clientY - mouseLook.lastY
-      const sign = getMouseLookSign()
-      cameraRotation.yaw += deltaX * 0.005 * sign
-      cameraRotation.pitch += deltaY * 0.005 * sign
+      const pitchSign = getMouseLookSign()
+      cameraRotation.yaw += deltaX * 0.005 * -1
+      cameraRotation.pitch += deltaY * 0.005 * pitchSign
       cameraRotation.pitch = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, cameraRotation.pitch))
       const euler = new THREE.Euler(cameraRotation.pitch, cameraRotation.yaw, 0, 'YXZ')
       camera.quaternion.setFromEuler(euler)
