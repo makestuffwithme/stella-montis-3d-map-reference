@@ -1,0 +1,38 @@
+@import "tailwindcss";
+
+/* Base: app and canvas (Tailwind preflight already resets box-sizing) */
+#app {
+  @apply w-full h-screen overflow-hidden;
+}
+
+canvas {
+  @apply block;
+  touch-action: none;
+}
+
+/* Controls card minimized state (toggled by JS) */
+.controls-card--minimized {
+  @apply py-1.5 px-3;
+}
+
+.controls-card--minimized .controls-card-body {
+  @apply hidden;
+}
+
+.controls-card--minimized .controls-card-toggle {
+  @apply text-sm leading-none;
+}
+
+/* Credit CTA: YouTube subscribe link - hide text when minimized, keep icon */
+.controls-card--minimized .credit-cta span:not(.credit-cta-icon) {
+  @apply hidden;
+}
+.controls-card--minimized .credit-cta {
+  @apply px-1.5;
+}
+.credit-cta .credit-cta-icon {
+  @apply flex shrink-0 items-center justify-center text-[#ff0000];
+}
+.credit-cta:hover .credit-cta-icon {
+  @apply text-[#ff3333];
+}
