@@ -1,6 +1,6 @@
 ### are you getting lost in the halls of stella montis?? [try this 3D interactive map!](https://makestuffwithme.github.io/stella-montis-3d-map-reference/)
 
-[![Stella Montis 3D Interactive Map](/public/preview.png)](https://makestuffwithme.github.io/stella-montis-3d-map-reference/)
+[![Stella Montis 3D Interactive Map](/app/public/preview.png)](https://makestuffwithme.github.io/stella-montis-3d-map-reference/)
 
 ## license and asset usage
 
