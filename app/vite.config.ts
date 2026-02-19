@@ -1,11 +1,7 @@
 import { defineConfig } from 'vite'
 import tailwindcss from '@tailwindcss/vite'
-import { svelte } from '@sveltejs/vite-plugin-svelte'
+import { sveltekit } from '@sveltejs/kit/vite'
 
 export default defineConfig({
-  plugins: [
-    svelte(),
-    tailwindcss(),
-  ],
-  base: '/stella-montis-3d-map-reference/'
+  plugins: [sveltekit(), tailwindcss()]
 })

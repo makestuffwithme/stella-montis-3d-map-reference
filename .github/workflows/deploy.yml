@@ -44,9 +44,9 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
         working-directory: app
         run: |
-          aws s3 sync dist/assets/ "s3://stella-montis-3d-map-reference/" \
+          aws s3 sync build/_app/immutable/assets/ "s3://stella-montis-3d-map-reference/" \
             --exclude "*" \
-            --include "stella-3d-reference-*.glb" \
+            --include "stella-3d-reference*.glb" \
             --endpoint-url "https://1f7f3223a46ac85cf3c94927847b45ff.r2.cloudflarestorage.com" \
             --content-type "model/gltf-binary" \
             --cache-control "public, max-age=31536000, immutable" \
@@ -55,7 +55,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v4
         with:
-          path: './app/dist'
+          path: './app/build'
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
