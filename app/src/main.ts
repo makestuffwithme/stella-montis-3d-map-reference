@@ -3,7 +3,7 @@ import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { setupDesktopControls, updateDesktopMovement } from './controls/desktop'
 import { setupTouchControls } from './controls/touch'
-import { setupLighting, setupEdgeLines, rebuildEdgeLines } from './lighting'
+import { setupLighting, setupEdgeLines, drawFacesAndEdges } from './lighting'
 import modelUrl from './assets/stella-3d-reference.glb?url'
 
 export function initApp(container: HTMLElement) {
@@ -33,17 +33,10 @@ export function initApp(container: HTMLElement) {
   loader.load(
     modelPath,
     (gltf) => {
+      const now = Date.now()
+      
       const model = gltf.scene
       scene.add(model)
-
-      model.traverse((child) => {
-        if (child instanceof THREE.Mesh && child.material) {
-          const materials = Array.isArray(child.material) ? child.material : [child.material]
-          materials.forEach((mat) => {
-            mat.side = THREE.FrontSide
-          })
-        }
-      })
 
       const box = new THREE.Box3().setFromObject(model)
       const center = box.getCenter(new THREE.Vector3())
@@ -51,12 +44,12 @@ export function initApp(container: HTMLElement) {
       model.position.sub(center)
       model.updateMatrixWorld(true)
 
-      rebuildEdgeLines(model)
+      drawFacesAndEdges(model)
 
       const euler = new THREE.Euler(cameraRotation.pitch, cameraRotation.yaw, 0, 'YXZ')
       camera.quaternion.setFromEuler(euler)
 
-      console.log('Model loaded successfully')
+      console.log('Model loaded successfully in', Date.now() - now, 'ms')
     },
     (progress) => {
       console.log('Model loading progress:', progress)

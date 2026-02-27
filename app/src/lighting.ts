@@ -38,7 +38,7 @@ export function setupEdgeLines(scene: THREE.Scene) {
   scene.add(wireframeOverlayGroup)
 }
 
-export function rebuildEdgeLines(model: THREE.Group) {
+export function drawFacesAndEdges(model: THREE.Group) {
   wireframeOverlayMeshes.length = 0
   while (wireframeOverlayGroup.children.length) {
     const c = wireframeOverlayGroup.children[0]
@@ -51,7 +51,15 @@ export function rebuildEdgeLines(model: THREE.Group) {
   const _wScale = new THREE.Vector3()
   
   model.traverse((child) => {
-    if (child instanceof THREE.Mesh && child.geometry) {
+    if (child instanceof THREE.Mesh) {
+      if (child.material) {
+        const materials = Array.isArray(child.material) ? child.material : [child.material]
+        materials.forEach((mat) => {
+          mat.side = THREE.FrontSide
+        })
+      }
+      if (!child.geometry) return
+
       child.getWorldPosition(_wPos)
       child.getWorldQuaternion(_wQuat)
       child.getWorldScale(_wScale)
