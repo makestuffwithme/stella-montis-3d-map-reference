@@ -64,6 +64,15 @@
           <kbd class="mr-1 inline-block rounded border border-white/10 bg-white/10 px-1 py-0 font-sans text-[11px]">left click</kbd> toggle mouselook
         </li>
         <li class="mb-1 last:mb-0">
+          <kbd class="mr-1 inline-block rounded border border-white/10 bg-white/10 px-1 py-0 font-sans text-[11px]">shift + left click</kbd> snap to location
+        </li>
+        <li class="mb-1 last:mb-0">
+          <kbd class="mr-1 inline-block rounded border border-white/10 bg-white/10 px-1 py-0 font-sans text-[11px]">e</kbd> show path to nearest exit
+        </li>
+        <li class="mb-1 last:mb-0">
+          <kbd class="mr-1 inline-block rounded border border-white/10 bg-white/10 px-1 py-0 font-sans text-[11px]">shift + e</kbd> animate camera along path
+        </li>
+        <li class="mb-1 last:mb-0">
           <label class="controls-option inline-flex cursor-pointer items-center gap-1.5">
             <input 
               type="checkbox" 
@@ -83,6 +92,7 @@
         <li class="mb-1 last:mb-0">one finger to rotate</li>
         <li class="mb-1 last:mb-0">two fingers to pan</li>
         <li class="mb-1 last:mb-0">pinch to zoom</li>
+        <li class="mb-1 last:mb-0">long press snap to location</li>
         <li class="mb-0 mt-2 flex justify-center items-center gap-2">
           <ActionButtons {onInfoClick} />
         </li>

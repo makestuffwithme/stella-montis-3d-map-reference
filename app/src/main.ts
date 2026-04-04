@@ -4,7 +4,8 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { setupDesktopControls, updateDesktopMovement } from './controls/desktop'
 import { setupTouchControls } from './controls/touch'
 import { setupLighting, setupEdgeLines, drawFacesAndEdges } from './lighting'
-import modelUrl from './assets/stella-3d-reference.glb?url'
+import { extractNav } from './navigation/navGraph';
+import modelUrl from './assets/stella-3d-with-paths.glb?url'
 
 export function initApp(container: HTMLElement) {
   const scene = new THREE.Scene()
@@ -36,13 +37,37 @@ export function initApp(container: HTMLElement) {
       const now = Date.now()
       
       const model = gltf.scene
+      
+      // Hide any navigation path lines that might be in the model
+      model.traverse((child) => {
+        if (child instanceof THREE.Line || child instanceof THREE.LineSegments) {
+          child.visible = false
+        }
+      })
+      
       scene.add(model)
+
+      const mapMeshes: THREE.Mesh[] = []
+      model.traverse((child) => {
+        if (child instanceof THREE.Mesh) {
+          mapMeshes.push(child)
+        }
+      })
+      ;(window as any).mapMeshes = mapMeshes
+
+      const { graph, exits } = extractNav(gltf);
+      ;(window as any).navGraph = graph;
+      ;(window as any).exits = exits;
 
       const box = new THREE.Box3().setFromObject(model)
       const center = box.getCenter(new THREE.Vector3())
 
       model.position.sub(center)
       model.updateMatrixWorld(true)
+
+      // Adjust navigation data (nodes/exits) to the same centered coordinate space used by rendered model
+      graph.nodes.forEach((node) => node.position.sub(center))
+      exits.forEach((exit) => exit.position.sub(center))
 
       drawFacesAndEdges(model)
 
@@ -75,14 +100,14 @@ export function initApp(container: HTMLElement) {
     setupTouchControls(renderer, camera, cameraRotation)
   } else {
     const mouse = new THREE.Vector2()
-    setupDesktopControls(renderer, camera, cameraRotation, mouse)
+    setupDesktopControls(renderer, camera, cameraRotation, mouse, scene)
   }
 
   function animate() {
     requestAnimationFrame(animate)
 
     if (!isMobile) {
-      updateDesktopMovement(camera)
+      updateDesktopMovement(camera, cameraRotation)
     }
 
     renderer.render(scene, camera)
